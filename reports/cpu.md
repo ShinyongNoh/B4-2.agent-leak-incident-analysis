@@ -12,21 +12,21 @@ Before:
 
 ```bash
 MEMORY_LIMIT=512 CPU_MAX_OCCUPY=30 MULTI_THREAD_ENABLE=false \
-  ./agent-leak-app-arm64 > evidence/cpu/app-baseline-final.log 2>&1 &
+  ./agent-leak-app-arm64 > /tmp/cpu-app-before.log 2>&1 &
 ./monitor.sh -n agent-leak-app-arm64 -i 1 -d 30 \
-  -o evidence/cpu/monitor-baseline-final.log
+  -o evidence/cpu/before.log
 ```
 
 After:
 
 ```bash
 MEMORY_LIMIT=512 CPU_MAX_OCCUPY=100 MULTI_THREAD_ENABLE=false \
-  ./agent-leak-app-arm64 > evidence/cpu/app-after-long.log 2>&1 &
+  ./agent-leak-app-arm64 > /tmp/cpu-app-after.log 2>&1 &
 ./monitor.sh -n agent-leak-app-arm64 -i 1 -d 100 \
-  -o evidence/cpu/monitor-after-long.log
+  -o evidence/cpu/after.log
 ```
 
-전체 원문은 [baseline app log](../evidence/cpu/app-baseline-final.log), [after app log](../evidence/cpu/app-after-long.log), [baseline monitor](../evidence/cpu/monitor-baseline-final.log), [after monitor](../evidence/cpu/monitor-after-long.log)에 있습니다.
+전체 원문은 애플리케이션 로그와 관제 로그를 합친 [before.log](../evidence/cpu/before.log), [after.log](../evidence/cpu/after.log)에 있습니다.
 
 ## 3. Evidence & Logs (증거 자료)
 
@@ -54,7 +54,7 @@ MEMORY_LIMIT=512 CPU_MAX_OCCUPY=100 MULTI_THREAD_ENABLE=false \
 Terminated
 ```
 
-원문: [app-after-long.log](../evidence/cpu/app-after-long.log)
+원문: [after.log](../evidence/cpu/after.log)
 
 ### 3.2 Linux 관제 및 해석 범위
 
@@ -67,7 +67,7 @@ Terminated
 [18:04:18] MONITOR:PROCESS_EXITED PID:217
 ```
 
-시스템 load average도 관측 당시 0.00~0.02 수준이었습니다. 따라서 이 바이너리의 `CpuWorker Current Load`는 실제 host CPU와 동일한 계측값이 아니라 애플리케이션 내부 Watchdog 부하 지표로 보입니다. 리포트에서는 이 차이를 숨기지 않고, 애플리케이션 정책 부하와 OS 관제 CPU를 분리해 기록했습니다. 원문: [monitor-after-long.log](../evidence/cpu/monitor-after-long.log)
+시스템 load average도 관측 당시 0.00~0.02 수준이었습니다. 따라서 이 바이너리의 `CpuWorker Current Load`는 실제 host CPU와 동일한 계측값이 아니라 애플리케이션 내부 Watchdog 부하 지표로 보입니다. 리포트에서는 이 차이를 숨기지 않고, 애플리케이션 정책 부하와 OS 관제 CPU를 분리해 기록했습니다. 원문: [after.log](../evidence/cpu/after.log)
 
 ## 4. Root Cause Analysis (원인 분석)
 

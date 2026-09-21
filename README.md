@@ -33,7 +33,14 @@ printf '%s' agent_api_key_test > "$AGENT_KEY_PATH/secret.key"
 ./monitor.sh -n agent-leak-app-arm64 -i 1 -d 120 -o evidence/<case>/monitor.log
 ```
 
-`monitor.sh`는 바이너리가 fork하는 프로세스를 고려해 일치하는 프로세스들의 CPU, MEM, RSS, 스레드 수를 합산하고, 종료 시점 또는 관측 시간 종료도 로그로 남깁니다.
+`monitor.sh`는 바이너리가 fork하는 프로세스를 고려해 일치하는 프로세스들의 CPU, MEM, RSS, 스레드 수를 합산하고, 종료 시점 또는 관측 시간 종료도 로그로 남깁니다. 로그 파일은 실행할 때마다 새로 작성되며, 반복되는 시스템 메모리와 load 출력은 제외하고 장애 분석에 필요한 정보만 한 줄에 정리합니다.
+
+```text
+# time                     PID(S)          CPU%    MEM%       RSS       THR STATE
+2026-09-21 05:17:01+0000  PID=203,204       CPU=  2.90% MEM=  0.50% RSS=   42.86MB THR=2   STATE=Ss
+2026-09-21 05:17:04+0000  EVENT=PROCESS_EXITED PID=203
+2026-09-21 05:17:04+0000  EVENT=MONITOR_FINISHED
+```
 
 ## 검증 요약
 
@@ -189,19 +196,29 @@ pkill -TERM -f '^/work/agent-leak-app-arm64$' 2>/dev/null || true
 
 ```bash
 run_and_monitor() {
-  app_log="$1"
-  monitor_log="$2"
-  duration="$3"
+  combined_log="$1"
+  duration="$2"
+  app_tmp="/tmp/agent-leak-app.$$.log"
+  monitor_tmp="/tmp/agent-leak-monitor.$$.log"
 
-  su -p -s /bin/bash agent -c 'exec /work/agent-leak-app-arm64' > "$app_log" 2>&1 &
+  su -p -s /bin/bash agent -c 'exec /work/agent-leak-app-arm64' > "$app_tmp" 2>&1 &
   sleep 1
-  ./monitor.sh -n agent-leak-app-arm64 -i 1 -d "$duration" -o "$monitor_log"
+  ./monitor.sh -n agent-leak-app-arm64 -i 1 -d "$duration" -o "$monitor_tmp"
   pkill -TERM -f '^/work/agent-leak-app-arm64$' 2>/dev/null || true
   sleep 1
+
+  {
+    printf '%s\n' '=== APPLICATION LOG ==='
+    awk '{print}' "$app_tmp"
+    printf '\n%s\n' '=== MONITOR LOG ==='
+    awk '{print}' "$monitor_tmp"
+  } > "$combined_log"
+
+  rm -f "$app_tmp" "$monitor_tmp"
 }
 ```
 
-이 함수는 애플리케이션을 `agent` 사용자로 시작하고, `monitor.sh`를 실행한 뒤, 관측이 끝나면 해당 애플리케이션만 종료합니다. 세 케이스는 반드시 한 번에 하나씩 실행해야 합니다. 모든 케이스가 동일한 `15034` 포트를 사용하기 때문입니다.
+이 함수는 애플리케이션 로그와 관제 로그를 하나의 `before.log` 또는 `after.log`로 합칩니다. 실행 중간 파일은 `/tmp`에 만들고 최종 증거 폴더에는 남기지 않습니다. 세 케이스는 반드시 한 번에 하나씩 실행해야 합니다. 모든 케이스가 동일한 `15034` 포트를 사용하기 때문입니다.
 
 ### 8. OOM 재현과 Workaround 비교
 
@@ -211,7 +228,7 @@ Before 실행:
 export MEMORY_LIMIT=50
 export CPU_MAX_OCCUPY=100
 export MULTI_THREAD_ENABLE=false
-run_and_monitor /work/evidence/demo/oom/app-before.log /work/evidence/demo/oom/monitor-before.log 120
+run_and_monitor /work/evidence/demo/oom/before.log 120
 ```
 
 Before 로그에서 다음 내용을 확인합니다.
@@ -228,7 +245,7 @@ After 실행:
 export MEMORY_LIMIT=512
 export CPU_MAX_OCCUPY=30
 export MULTI_THREAD_ENABLE=false
-run_and_monitor /work/evidence/demo/oom/app-after.log /work/evidence/demo/oom/monitor-after.log 35
+run_and_monitor /work/evidence/demo/oom/after.log 35
 ```
 
 After에서는 35초 동안 프로세스가 살아 있고 RSS가 계속 증가하는지 확인합니다.
@@ -241,7 +258,7 @@ Before 실행:
 export MEMORY_LIMIT=512
 export CPU_MAX_OCCUPY=30
 export MULTI_THREAD_ENABLE=false
-run_and_monitor /work/evidence/demo/cpu/app-before.log /work/evidence/demo/cpu/monitor-before.log 30
+run_and_monitor /work/evidence/demo/cpu/before.log 30
 ```
 
 다음과 같은 cooldown 로그가 나타나면 정상입니다.
@@ -256,7 +273,7 @@ After 실행:
 export MEMORY_LIMIT=512
 export CPU_MAX_OCCUPY=100
 export MULTI_THREAD_ENABLE=false
-run_and_monitor /work/evidence/demo/cpu/app-after.log /work/evidence/demo/cpu/monitor-after.log 100
+run_and_monitor /work/evidence/demo/cpu/after.log 100
 ```
 
 다음 로그가 나타나면 CPU Watchdog 재현에 성공한 것입니다.
@@ -282,7 +299,9 @@ export MULTI_THREAD_ENABLE=true
 애플리케이션을 시작합니다.
 
 ```bash
-su -p -s /bin/bash agent -c 'exec /work/agent-leak-app-arm64' > /work/evidence/demo/deadlock/app-before.log 2>&1 &
+DEADLOCK_APP_TMP=/tmp/agent-leak-deadlock-app.log
+DEADLOCK_MONITOR_TMP=/tmp/agent-leak-deadlock-monitor.log
+su -p -s /bin/bash agent -c 'exec /work/agent-leak-app-arm64' > "$DEADLOCK_APP_TMP" 2>&1 &
 sleep 7
 ```
 
@@ -305,7 +324,7 @@ top -H -b -n 1 -p "$LEADER_PID" > /work/evidence/demo/deadlock/top-before.txt
 관제 로그를 수집합니다.
 
 ```bash
-./monitor.sh -n agent-leak-app-arm64 -i 1 -d 25 -o /work/evidence/demo/deadlock/monitor-before.log
+./monitor.sh -n agent-leak-app-arm64 -i 1 -d 25 -o "$DEADLOCK_MONITOR_TMP"
 ```
 
 다음 로그를 확인합니다.
@@ -323,6 +342,15 @@ Deadlock 프로세스를 종료합니다.
 pkill -TERM -f '^/work/agent-leak-app-arm64$' 2>/dev/null || true
 sleep 1
 pkill -KILL -f '^/work/agent-leak-app-arm64$' 2>/dev/null || true
+
+{
+  printf '%s\n' '=== APPLICATION LOG ==='
+  awk '{print}' "$DEADLOCK_APP_TMP"
+  printf '\n%s\n' '=== MONITOR LOG ==='
+  awk '{print}' "$DEADLOCK_MONITOR_TMP"
+} > /work/evidence/demo/deadlock/before.log
+
+rm -f "$DEADLOCK_APP_TMP" "$DEADLOCK_MONITOR_TMP"
 ```
 
 ### 11. Deadlock 회피 확인
@@ -331,7 +359,7 @@ pkill -KILL -f '^/work/agent-leak-app-arm64$' 2>/dev/null || true
 export MEMORY_LIMIT=512
 export CPU_MAX_OCCUPY=30
 export MULTI_THREAD_ENABLE=false
-run_and_monitor /work/evidence/demo/deadlock/app-after.log /work/evidence/demo/deadlock/monitor-after.log 15
+run_and_monitor /work/evidence/demo/deadlock/after.log 15
 ```
 
 After 로그에서 다음 내용을 확인합니다.
@@ -352,17 +380,12 @@ find /work/evidence/demo -type f | sort
 호스트에서 프로젝트 폴더를 확인하면 같은 증거 파일이 생성되어 있습니다. 주요 파일은 다음과 같습니다.
 
 ```text
-evidence/demo/oom/app-before.log
-evidence/demo/oom/app-after.log
-evidence/demo/oom/monitor-before.log
-evidence/demo/oom/monitor-after.log
-evidence/demo/cpu/app-before.log
-evidence/demo/cpu/app-after.log
-evidence/demo/cpu/monitor-before.log
-evidence/demo/cpu/monitor-after.log
-evidence/demo/deadlock/app-before.log
-evidence/demo/deadlock/app-after.log
-evidence/demo/deadlock/monitor-before.log
+evidence/demo/oom/before.log
+evidence/demo/oom/after.log
+evidence/demo/cpu/before.log
+evidence/demo/cpu/after.log
+evidence/demo/deadlock/before.log
+evidence/demo/deadlock/after.log
 evidence/demo/deadlock/processes.txt
 evidence/demo/deadlock/threads-before.txt
 evidence/demo/deadlock/top-before.txt

@@ -1,3 +1,48 @@
+=== APPLICATION LOG ===
+>>> Starting Agent Boot Sequence...
+[1/6] Checking User Account               [OK]
+   ... Running as service user 'agent' (uid=1000)
+[2/6] Verifying Environment Variables     [OK]
+   ... All required Envs correct
+[3/6] Checking Required Files             [OK]
+   ... Verified 'secret.key' with correct key string.
+[4/6] Checking Port Availability          [OK]
+   ... Port 15034 is available.
+[5/6] Verifying Log Permission            [OK]
+   ... Log directory is writable: /tmp/agent_home/logs
+[6/6] Verifying Mission Environment       [OK]
+   ... MEMORY_LIMIT=512MB, CPU_MAX_OCCUPY=100%, MULTI_THREAD_ENABLE=False
+------------------------------------------------------------
+All Boot Checks Passed!
+Agent READY
+2026-09-20 18:03:48,274 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-09-20 18:03:48,274 [INFO] Agent listening at port 15034
+
+==================================================
+ [ Agent Initiate ] Resource Check 
+==================================================
+ [ MEMORY ] Limit: 512MB 		[ OK ]
+ [ CPU    ] Limit: 100%  		[ WARNING: Recommend Under 50% ]
+ [ THREAD ] Concurrency: False 		[ OK ]
+--------------------------------------------------
+ >>> SYSTEM STATUS: STABLE. STARTING WORKLOAD MONITORING...
+==================================================
+
+2026-09-20 18:03:50,289 [INFO] [CpuWorker] Started. Maximum CPU Limit: 100%
+2026-09-20 18:03:50,290 [INFO] [CpuWorker] Current Load: 5.00%
+2026-09-20 18:03:53,415 [INFO] [CpuWorker] Current Load: 13.26%
+2026-09-20 18:03:56,554 [INFO] [CpuWorker] Current Load: 13.86%
+2026-09-20 18:03:59,685 [INFO] [CpuWorker] Current Load: 18.45%
+2026-09-20 18:04:02,819 [INFO] [CpuWorker] Current Load: 26.46%
+2026-09-20 18:04:05,953 [INFO] [CpuWorker] Current Load: 33.51%
+2026-09-20 18:04:09,094 [INFO] [CpuWorker] Current Load: 41.79%
+2026-09-20 18:04:12,226 [INFO] [CpuWorker] Current Load: 43.06%
+2026-09-20 18:04:15,354 [INFO] [CpuWorker] Current Load: 46.33%
+2026-09-20 18:04:18,478 [INFO] [CpuWorker] Current Load: 54.08%
+2026-09-20 18:04:18,580 [CRITICAL] [CpuWorker] CPU Threshold Violated! (54.080000000000005%).
+Terminated
+
+=== MONITOR LOG ===
 # monitor.sh started=2026-09-20 18:03:48+0000 host=5798da3b691f kernel=Linux 7.0.12-linuxkit aarch64 GNU/Linux
 # process_name=agent-leak-app-arm64 pid=auto interval=1s duration=100s
 [2026-09-20 18:03:48+0000] PROCESS:agent-leak-app-arm64 STATUS:NOT_FOUND

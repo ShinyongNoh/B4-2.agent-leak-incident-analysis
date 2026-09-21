@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+
+# Compact process monitor for agent-leak-app.
+# It records only the data needed to diagnose OOM, CPU, and Deadlock cases.
+
 set -u
 
 PROCESS_NAME="agent-leak-app"
@@ -7,15 +12,15 @@ DURATION=0
 OUTPUT="monitor.log"
 
 usage() {
-    sed -n '2,8p' "$0"
     cat <<'EOF'
+Usage: ./monitor.sh [options]
 
 Options:
-  -p PID       Monitor this exact process ID.
-  -n NAME      Process name/command to locate (default: agent-leak-app).
+  -p PID       Monitor one PID.
+  -n NAME      Match an executable/command name (default: agent-leak-app).
   -i SECONDS   Sampling interval (default: 1).
-  -d SECONDS   Stop after this many seconds; 0 means until the process exits.
-  -o FILE      Output log path (default: monitor.log).
+  -d SECONDS   Stop after this duration; 0 means until the process exits.
+  -o FILE      Output file (default: monitor.log, overwritten per run).
   -h           Show this help.
 EOF
 }
@@ -28,8 +33,8 @@ while getopts ":p:n:i:d:o:h" opt; do
         d) DURATION="$OPTARG" ;;
         o) OUTPUT="$OPTARG" ;;
         h) usage; exit 0 ;;
-        :) echo "Missing argument for -$OPTARG" >&2; usage >&2; exit 2 ;;
-        \?) echo "Unknown option: -$OPTARG" >&2; usage >&2; exit 2 ;;
+        :) echo "Missing argument for -$OPTARG" >&2; exit 2 ;;
+        \?) echo "Unknown option: -$OPTARG" >&2; exit 2 ;;
     esac
 done
 
@@ -39,108 +44,110 @@ if ! [[ "$INTERVAL" =~ ^[0-9]+([.][0-9]+)?$ ]] || ! [[ "$DURATION" =~ ^[0-9]+$ ]
 fi
 
 mkdir -p "$(dirname "$OUTPUT")"
+: > "$OUTPUT"
 
-find_pid() {
-    if [[ -n "$TARGET_PID" ]]; then
-        printf '%s\n' "$TARGET_PID"
-        return 0
-    fi
-
-    if command -v pgrep >/dev/null 2>&1 && ((${#PROCESS_NAME} <= 15)); then
-        pid="$(pgrep -x "$PROCESS_NAME" | head -n 1 || true)"
-        if [[ -z "$pid" ]]; then
-            pid="$(ps -eo pid=,pcpu=,comm=,args= 2>/dev/null | awk -v name="$PROCESS_NAME" -v self="$$" '$1 != self && $3 !~ /(monitor|bash|su|ps|awk|sleep)/ && $0 ~ name {if (($2 + 0) > best) {best = $2 + 0; selected = $1}} END {print selected}' || true)"
-        fi
-        printf '%s\n' "$pid"
-        return 0
-    fi
-
-    ps -eo pid=,pcpu=,comm=,args= 2>/dev/null | awk -v name="$PROCESS_NAME" -v self="$$" '$1 != self && $3 !~ /(monitor|bash|su|ps|awk|sleep)/ && $0 ~ name {if (($2 + 0) > best) {best = $2 + 0; selected = $1}} END {print selected}'
-}
-
-timestamp() {
+now() {
     date '+%Y-%m-%d %H:%M:%S%z'
 }
 
-write_system_snapshot() {
-    local ts="$1"
-    local pid="$2"
-    local row cpu mem rss etime stat threads comm
+write_log() {
+    printf '%s\n' "$1" >> "$OUTPUT"
+}
 
-    if [[ -z "$TARGET_PID" ]]; then
-        row="$(ps -eo pid=,pcpu=,pmem=,rss=,etime=,stat=,nlwp=,comm=,args= 2>/dev/null | awk -v name="$PROCESS_NAME" -v self="$$" '
-            $1 != self && $8 !~ /(monitor|bash|su|ps|awk|sleep)/ && $0 ~ name {
-                count++;
-                cpu += $2;
-                mem += $3;
-                rss += $4;
-                threads += $7;
-                if (($2 + 0) > maxcpu) { maxcpu = $2 + 0; leader = $1 }
-                if (firststat == "") { firststat = $6; firstcomm = $8; elapsed = $5 }
-            }
-            END {
-                if (count > 0) printf "%d %.2f %.2f %d %s %s %d %s", count, cpu, mem, rss, elapsed, firststat, threads, firstcomm;
-            }')"
-        if [[ -z "$row" ]]; then
-            printf '[%s] PROCESS:%s PID:%s STATUS:EXITED\n' "$ts" "$PROCESS_NAME" "$pid" >> "$OUTPUT"
-            return 1
-        fi
-        read -r count cpu mem rss etime stat threads comm <<< "$row"
-        printf '[%s] PROCESS:%s PID:%s PIDS:%s CPU:%s%% MEM:%s%% RSS_KB:%s ELAPSED:%s STAT:%s THREADS:%s COMM:%s\n' \
-            "$ts" "$PROCESS_NAME" "$pid" "$count" "$cpu" "$mem" "$rss" "$etime" "$stat" "$threads" "$comm" >> "$OUTPUT"
+process_rows() {
+    ps -eo pid=,pcpu=,pmem=,rss=,stat=,nlwp=,comm=,args= 2>/dev/null |
+        awk -v name="$PROCESS_NAME" -v self="$$" '
+            $1 != self && $7 !~ /(monitor|bash|su|ps|awk|sleep)/ && $0 ~ name {print}'
+}
+
+find_pid() {
+    if [[ -n "$TARGET_PID" ]]; then
+        ps -p "$TARGET_PID" -o pid= 2>/dev/null | awk '{$1=$1; print; exit}'
     else
-        row="$(ps -p "$pid" -o '%cpu=,%mem=,rss=,etime=,stat=,nlwp=,comm=' 2>/dev/null | awk '{$1=$1; print}')"
-        if [[ -z "$row" ]]; then
-            printf '[%s] PROCESS:%s PID:%s STATUS:EXITED\n' "$ts" "$PROCESS_NAME" "$pid" >> "$OUTPUT"
-            return 1
-        fi
-
-        read -r cpu mem rss etime stat threads comm <<< "$row"
-        printf '[%s] PROCESS:%s PID:%s CPU:%s%% MEM:%s%% RSS_KB:%s ELAPSED:%s STAT:%s THREADS:%s COMM:%s\n' \
-            "$ts" "$PROCESS_NAME" "$pid" "$cpu" "$mem" "$rss" "$etime" "$stat" "$threads" "$comm" >> "$OUTPUT"
+        process_rows | awk 'NR == 1 {print $1; exit}'
     fi
+}
 
-    if command -v free >/dev/null 2>&1; then
-        free -m | awk -v ts="$ts" 'NR == 2 {printf "[%s] SYSTEM_MEMORY: total_mb=%s used_mb=%s free_mb=%s available_mb=%s\n", ts, $2, $3, $4, $7}' >> "$OUTPUT"
-    fi
+write_auto_snapshot() {
+    local row
+    row="$(process_rows | awk '
+        {
+            count++;
+            pids = pids (count == 1 ? "" : ",") $1;
+            cpu += $2;
+            mem += $3;
+            rss += $4;
+            threads += $6;
+            if (state == "") state = $5;
+        }
+        END {
+            if (count > 0) printf "%s\t%.2f\t%.2f\t%.2f\t%d\t%s", pids, cpu, mem, rss / 1024, threads, state;
+        }')"
 
-    if command -v uptime >/dev/null 2>&1; then
-        printf '[%s] LOAD: %s\n' "$ts" "$(uptime | sed 's/^[[:space:]]*//')" >> "$OUTPUT"
-    fi
+    [[ -n "$row" ]] || return 1
 
-    return 0
+    local pids cpu mem rss_mb threads state
+    IFS=$'\t' read -r pids cpu mem rss_mb threads state <<< "$row"
+    printf '%-25s PID=%-15s CPU=%6s%% MEM=%6s%% RSS=%8sMB THR=%-3s STATE=%s\n' \
+        "$(now)" "$pids" "$cpu" "$mem" "$rss_mb" "$threads" "$state" >> "$OUTPUT"
+}
+
+write_pid_snapshot() {
+    local pid="$1"
+    local row
+    row="$(ps -p "$pid" -o '%cpu=,%mem=,rss=,stat=,nlwp=' 2>/dev/null | awk '{$1=$1; print}')"
+    [[ -n "$row" ]] || return 1
+
+    local cpu mem rss_kb state threads
+    read -r cpu mem rss_kb state threads <<< "$row"
+    printf '%-25s PID=%-15s CPU=%6s%% MEM=%6s%% RSS=%8.2fMB THR=%-3s STATE=%s\n' \
+        "$(now)" "$pid" "$cpu" "$mem" "$((rss_kb / 1024))" "$threads" "$state" >> "$OUTPUT"
 }
 
 start_epoch="$(date +%s)"
 last_pid=""
+waiting_logged=0
+
 {
-    printf '# monitor.sh started=%s host=%s kernel=%s\n' "$(timestamp)" "$(hostname)" "$(uname -srmo 2>/dev/null || uname -a)"
-    printf '# process_name=%s pid=%s interval=%ss duration=%ss\n' "$PROCESS_NAME" "${TARGET_PID:-auto}" "$INTERVAL" "$DURATION"
+    printf '# monitor.sh process=%s interval=%ss duration=%ss\n' \
+        "$PROCESS_NAME" "$INTERVAL" "$DURATION"
+    printf '# time                     PID(S)          CPU%%    MEM%%       RSS       THR STATE\n'
 } >> "$OUTPUT"
 
 while :; do
     current_epoch="$(date +%s)"
     if (( DURATION > 0 && current_epoch - start_epoch >= DURATION )); then
-        printf '[%s] MONITOR:TIME_LIMIT_REACHED\n' "$(timestamp)" >> "$OUTPUT"
+        write_log "$(now) EVENT=TIME_LIMIT_REACHED"
         break
     fi
 
     pid="$(find_pid || true)"
     if [[ -z "$pid" ]]; then
-        printf '[%s] PROCESS:%s STATUS:NOT_FOUND\n' "$(timestamp)" "$PROCESS_NAME" >> "$OUTPUT"
         if [[ -n "$last_pid" ]]; then
-            printf '[%s] MONITOR:PROCESS_EXITED PID:%s\n' "$(timestamp)" "$last_pid" >> "$OUTPUT"
+            write_log "$(now) EVENT=PROCESS_EXITED PID=$last_pid"
             break
+        fi
+        if (( waiting_logged == 0 )); then
+            write_log "$(now) EVENT=WAITING_FOR_PROCESS name=$PROCESS_NAME"
+            waiting_logged=1
         fi
     else
         last_pid="$pid"
-        if ! write_system_snapshot "$(timestamp)" "$pid"; then
-            printf '[%s] MONITOR:PROCESS_EXITED PID:%s\n' "$(timestamp)" "$pid" >> "$OUTPUT"
-            break
+        waiting_logged=0
+        if [[ -n "$TARGET_PID" ]]; then
+            if ! write_pid_snapshot "$pid"; then
+                write_log "$(now) EVENT=PROCESS_EXITED PID=$pid"
+                break
+            fi
+        else
+            if ! write_auto_snapshot; then
+                write_log "$(now) EVENT=PROCESS_EXITED PID=$pid"
+                break
+            fi
         fi
     fi
 
     sleep "$INTERVAL"
 done
 
-printf '[%s] monitor.sh finished\n' "$(timestamp)" >> "$OUTPUT"
+write_log "$(now) EVENT=MONITOR_FINISHED"

@@ -1,3 +1,40 @@
+=== APPLICATION LOG ===
+>>> Starting Agent Boot Sequence...
+[1/6] Checking User Account               [OK]
+   ... Running as service user 'agent' (uid=1000)
+[2/6] Verifying Environment Variables     [OK]
+   ... All required Envs correct
+[3/6] Checking Required Files             [OK]
+   ... Verified 'secret.key' with correct key string.
+[4/6] Checking Port Availability          [OK]
+   ... Port 15034 is available.
+[5/6] Verifying Log Permission            [OK]
+   ... Log directory is writable: /tmp/agent_home/logs
+[6/6] Verifying Mission Environment       [OK]
+   ... MEMORY_LIMIT=50MB, CPU_MAX_OCCUPY=100%, MULTI_THREAD_ENABLE=False
+------------------------------------------------------------
+All Boot Checks Passed!
+Agent READY
+2026-09-20 17:58:08,879 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-09-20 17:58:08,880 [INFO] Agent listening at port 15034
+
+==================================================
+ [ Agent Initiate ] Resource Check 
+==================================================
+ [ MEMORY ] Limit: 50MB 		[ WARNING: Recommend Over 256MB ]
+ [ CPU    ] Limit: 100%  		[ WARNING: Recommend Under 50% ]
+ [ THREAD ] Concurrency: False 		[ OK ]
+--------------------------------------------------
+ >>> SYSTEM STATUS: STABLE. STARTING WORKLOAD MONITORING...
+==================================================
+
+2026-09-20 17:58:10,897 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-09-20 17:58:13,916 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-09-20 17:58:13,917 [CRITICAL] [MemoryGuard] Memory limit exceeded (50MB >= 50MB) / (Recommend Over 256MB)
+2026-09-20 17:58:13,917 [CRITICAL] [MemoryGuard] Self-terminating process 217 to prevent system instability.
+Killed
+
+=== MONITOR LOG ===
 # monitor.sh started=2026-09-20 17:58:08+0000 host=84b71d21a0ef kernel=Linux 7.0.12-linuxkit aarch64 GNU/Linux
 # process_name=agent-leak-app-arm64 pid=auto interval=1s duration=120s
 [2026-09-20 17:58:08+0000] PROCESS:agent-leak-app-arm64 STATUS:NOT_FOUND

@@ -1,3 +1,68 @@
+=== APPLICATION LOG ===
+>>> Starting Agent Boot Sequence...
+[1/6] Checking User Account               [OK]
+   ... Running as service user 'agent' (uid=1000)
+[2/6] Verifying Environment Variables     [OK]
+   ... All required Envs correct
+[3/6] Checking Required Files             [OK]
+   ... Verified 'secret.key' with correct key string.
+[4/6] Checking Port Availability          [OK]
+   ... Port 15034 is available.
+[5/6] Verifying Log Permission            [OK]
+   ... Log directory is writable: /tmp/agent_home/logs
+[6/6] Verifying Mission Environment       [OK]
+   ... MEMORY_LIMIT=512MB, CPU_MAX_OCCUPY=30%, MULTI_THREAD_ENABLE=False
+------------------------------------------------------------
+All Boot Checks Passed!
+Agent READY
+2026-09-20 19:34:17,410 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-09-20 19:34:17,411 [INFO] Agent listening at port 15034
+
+==================================================
+ [ Agent Initiate ] Resource Check 
+==================================================
+ [ MEMORY ] Limit: 512MB 		[ OK ]
+ [ CPU    ] Limit: 30%  		[ OK ]
+ [ THREAD ] Concurrency: False 		[ OK ]
+--------------------------------------------------
+ >>> SYSTEM STATUS: STABLE. STARTING WORKLOAD MONITORING...
+==================================================
+
+2026-09-20 19:34:19,422 [INFO] >>> Scenario Selected: [Healthy System Monitoring]
+
+>>> [SYSTEM] ALL CONFIGURATIONS OPTIMAL. RUNNING STABILITY TEST... <<<
+
+2026-09-20 19:34:19,423 [INFO] [Scheduler] Task Scheduler Initialized.
+2026-09-20 19:34:19,423 [INFO] [Scheduler] Registered Tasks: ['Thread-A', 'Thread-B', 'Thread-C']
+2026-09-20 19:34:19,424 [INFO] [Scheduler] Starting task execution...
+2026-09-20 19:34:19,424 [INFO] [Thread-B] Task Started. Calculating... (20%)
+2026-09-20 19:34:19,482 [INFO] [Thread-B] Calculating... (40%)
+2026-09-20 19:34:19,540 [INFO] [Thread-B] Calculating... (60%)
+2026-09-20 19:34:19,597 [INFO] [Thread-B] Calculating... (80%)
+2026-09-20 19:34:19,663 [INFO] [Thread-B] Task Completed. (100%)
+2026-09-20 19:34:19,718 [INFO] [Thread-C] Task Started. Calculating... (20%)
+2026-09-20 19:34:19,770 [INFO] [Thread-C] Calculating... (40%)
+2026-09-20 19:34:19,825 [INFO] [Thread-C] Calculating... (60%)
+2026-09-20 19:34:19,879 [INFO] [Thread-C] Calculating... (80%)
+2026-09-20 19:34:19,938 [INFO] [Thread-C] Task Completed. (100%)
+2026-09-20 19:34:19,995 [INFO] [Thread-A] Task Started. Calculating... (20%)
+2026-09-20 19:34:20,057 [INFO] [Thread-A] Calculating... (40%)
+2026-09-20 19:34:20,111 [INFO] [Thread-A] Calculating... (60%)
+2026-09-20 19:34:20,164 [INFO] [Thread-A] Calculating... (80%)
+2026-09-20 19:34:20,219 [INFO] [Thread-A] Task Completed. (100%)
+2026-09-20 19:34:20,274 [INFO] [Scheduler] All tasks completed.
+2026-09-20 19:34:20,281 [INFO] [MemoryWorker] Current Heap: 25MB
+2026-09-20 19:34:20,282 [INFO] [CpuWorker] Started. Maximum CPU Limit: 30%
+2026-09-20 19:34:20,282 [INFO] [CpuWorker] Current Load: 5.00%
+2026-09-20 19:34:23,310 [INFO] [MemoryWorker] Current Heap: 50MB
+2026-09-20 19:34:23,408 [INFO] [CpuWorker] Current Load: 5.71%
+2026-09-20 19:34:26,346 [INFO] [MemoryWorker] Current Heap: 75MB
+2026-09-20 19:34:26,527 [INFO] [CpuWorker] Current Load: 8.14%
+2026-09-20 19:34:29,380 [INFO] [MemoryWorker] Current Heap: 100MB
+2026-09-20 19:34:29,650 [INFO] [CpuWorker] Current Load: 10.66%
+2026-09-20 19:34:32,414 [INFO] [MemoryWorker] Current Heap: 125MB
+
+=== MONITOR LOG ===
 # monitor.sh started=2026-09-20 19:34:17+0000 host=f203894d6680 kernel=Linux 7.0.12-linuxkit aarch64 GNU/Linux
 # process_name=agent-leak-app-arm64 pid=auto interval=1s duration=15s
 [2026-09-20 19:34:17+0000] PROCESS:agent-leak-app-arm64 STATUS:NOT_FOUND

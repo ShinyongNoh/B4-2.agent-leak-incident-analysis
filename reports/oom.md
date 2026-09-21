@@ -10,21 +10,21 @@
 
 ```bash
 MEMORY_LIMIT=50 CPU_MAX_OCCUPY=100 MULTI_THREAD_ENABLE=false \
-  ./agent-leak-app-arm64 > evidence/oom/app-before-final.log 2>&1 &
+  ./agent-leak-app-arm64 > /tmp/oom-app-before.log 2>&1 &
 ./monitor.sh -n agent-leak-app-arm64 -i 1 -d 120 \
-  -o evidence/oom/monitor-before-final.log
+  -o evidence/oom/before.log
 ```
 
 Workaround 비교:
 
 ```bash
 MEMORY_LIMIT=512 CPU_MAX_OCCUPY=30 MULTI_THREAD_ENABLE=false \
-  ./agent-leak-app-arm64 > evidence/oom/app-after-final.log 2>&1 &
+  ./agent-leak-app-arm64 > /tmp/oom-app-after.log 2>&1 &
 ./monitor.sh -n agent-leak-app-arm64 -i 1 -d 35 \
-  -o evidence/oom/monitor-after-final.log
+  -o evidence/oom/after.log
 ```
 
-실행 시 `AGENT_HOME`, `AGENT_PORT=15034`, 업로드·키·로그 디렉터리와 `secret.key`를 먼저 구성해야 합니다. 전체 실행 로그는 [before app log](../evidence/oom/app-before-final.log), [after app log](../evidence/oom/app-after-final.log)에서 확인할 수 있습니다.
+실행 시 `AGENT_HOME`, `AGENT_PORT=15034`, 업로드·키·로그 디렉터리와 `secret.key`를 먼저 구성해야 합니다. 애플리케이션 로그와 관제 로그를 합친 최종 증거는 [before.log](../evidence/oom/before.log), [after.log](../evidence/oom/after.log)에서 확인할 수 있습니다.
 
 ## 3. Evidence & Logs (증거 자료)
 
@@ -39,7 +39,7 @@ Before 관측에서 RSS는 다음처럼 증가했습니다.
 [17:58:14] MONITOR:PROCESS_EXITED PID:205
 ```
 
-원문: [monitor-before-final.log](../evidence/oom/monitor-before-final.log)
+원문: [before.log](../evidence/oom/before.log)
 
 After 관측에서는 35초 동안 프로세스가 종료되지 않았고 RSS가 약 18MB에서 300MB까지 증가했습니다.
 
@@ -53,7 +53,7 @@ After 관측에서는 35초 동안 프로세스가 종료되지 않았고 RSS가
 [17:59:17] MONITOR:TIME_LIMIT_REACHED
 ```
 
-원문: [monitor-after-final.log](../evidence/oom/monitor-after-final.log)
+원문: [after.log](../evidence/oom/after.log)
 
 ### 3.2 종료 직전 애플리케이션 로그
 
@@ -65,7 +65,7 @@ After 관측에서는 35초 동안 프로세스가 종료되지 않았고 RSS가
 Killed
 ```
 
-실행 결과는 컨테이너에서 종료 코드 137로 관측되었습니다. 이는 보호 종료 직후 프로세스가 SIGKILL 계열로 끝난 결과와 일치합니다. 원문: [app-before-final.log](../evidence/oom/app-before-final.log)
+실행 결과는 컨테이너에서 종료 코드 137로 관측되었습니다. 이는 보호 종료 직후 프로세스가 SIGKILL 계열로 끝난 결과와 일치합니다. 원문: [before.log](../evidence/oom/before.log)
 
 ## 4. Root Cause Analysis (원인 분석)
 

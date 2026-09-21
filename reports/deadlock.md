@@ -8,9 +8,9 @@
 
 ```bash
 MEMORY_LIMIT=512 CPU_MAX_OCCUPY=30 MULTI_THREAD_ENABLE=true \
-  ./agent-leak-app-arm64 > evidence/deadlock/app-final.log 2>&1 &
+  ./agent-leak-app-arm64 > /tmp/deadlock-app-before.log 2>&1 &
 ./monitor.sh -n agent-leak-app-arm64 -i 1 -d 25 \
-  -o evidence/deadlock/monitor-final.log
+  -o evidence/deadlock/before.log
 ```
 
 PID와 스레드 증거는 [ps-ef-final.txt](../evidence/deadlock/ps-ef-final.txt), [threads-final.txt](../evidence/deadlock/threads-final.txt), [threads-final-after.txt](../evidence/deadlock/threads-final-after.txt), [top-final.txt](../evidence/deadlock/top-final.txt), [top-final-after.txt](../evidence/deadlock/top-final-after.txt)에 있습니다.
@@ -19,7 +19,7 @@ Workaround 비교:
 
 ```bash
 MEMORY_LIMIT=512 CPU_MAX_OCCUPY=30 MULTI_THREAD_ENABLE=false \
-  ./agent-leak-app-arm64 > evidence/deadlock/app-after.log 2>&1 &
+  ./agent-leak-app-arm64 > /tmp/deadlock-app-after.log 2>&1 &
 ```
 
 ## 3. Evidence & Logs (증거 자료)
@@ -50,7 +50,7 @@ agent 218 208 ... /work/agent-leak-app-arm64
 [Worker-Thread-1] WAITING for [Socket_Pool_B]... (Status: BLOCKED)
 ```
 
-원문: [app-final.log](../evidence/deadlock/app-final.log)
+원문: [before.log](../evidence/deadlock/before.log)
 
 ### 3.3 CPU/MEM 정체
 
@@ -61,7 +61,7 @@ agent 218 208 ... /work/agent-leak-app-arm64
 [18:47:05] MONITOR:TIME_LIMIT_REACHED
 ```
 
-`top -H`에서도 leader 프로세스는 sleeping 상태이고 CPU 0.0%로 관측되었습니다. 원문: [monitor-final.log](../evidence/deadlock/monitor-final.log)
+`top -H`에서도 leader 프로세스는 sleeping 상태이고 CPU 0.0%로 관측되었습니다. 원문: [before.log](../evidence/deadlock/before.log)
 
 ## 4. Root Cause Analysis (원인 분석)
 
