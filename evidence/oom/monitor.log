@@ -1,0 +1,5 @@
+# monitor.sh started=2026-09-20 17:49:38+0000 host=1a6cdd6373b3 kernel=Linux 7.0.12-linuxkit aarch64 GNU/Linux
+# process_name=agent-leak-app pid=18 interval=1s duration=120s
+[2026-09-20 17:49:38+0000] PROCESS:agent-leak-app PID:18 STATUS:EXITED
+[2026-09-20 17:49:38+0000] MONITOR:PROCESS_EXITED PID:18
+[2026-09-20 17:49:38+0000] monitor.sh finished

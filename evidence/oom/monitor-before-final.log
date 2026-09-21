@@ -1,0 +1,21 @@
+# monitor.sh started=2026-09-20 17:58:08+0000 host=84b71d21a0ef kernel=Linux 7.0.12-linuxkit aarch64 GNU/Linux
+# process_name=agent-leak-app-arm64 pid=auto interval=1s duration=120s
+[2026-09-20 17:58:08+0000] PROCESS:agent-leak-app-arm64 STATUS:NOT_FOUND
+[2026-09-20 17:58:09+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:8.90% MEM:0.20% RSS_KB:18276 ELAPSED:00:01 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 17:58:09+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=617 free_mb=6751 available_mb=7317
+[2026-09-20 17:58:09+0000] LOAD: 17:58:09 up 12 min,  0 user,  load average: 0.10, 0.05, 0.01
+[2026-09-20 17:58:10+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:4.40% MEM:0.20% RSS_KB:18276 ELAPSED:00:02 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 17:58:10+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=617 free_mb=6751 available_mb=7317
+[2026-09-20 17:58:10+0000] LOAD: 17:58:10 up 12 min,  0 user,  load average: 0.10, 0.05, 0.01
+[2026-09-20 17:58:11+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:2.90% MEM:0.50% RSS_KB:43880 ELAPSED:00:03 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 17:58:11+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=644 free_mb=6723 available_mb=7289
+[2026-09-20 17:58:11+0000] LOAD: 17:58:11 up 12 min,  0 user,  load average: 0.10, 0.05, 0.01
+[2026-09-20 17:58:12+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:2.10% MEM:0.50% RSS_KB:43880 ELAPSED:00:04 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 17:58:12+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=645 free_mb=6722 available_mb=7288
+[2026-09-20 17:58:12+0000] LOAD: 17:58:12 up 13 min,  0 user,  load average: 0.09, 0.05, 0.00
+[2026-09-20 17:58:13+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:1.60% MEM:0.50% RSS_KB:43880 ELAPSED:00:05 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 17:58:13+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=645 free_mb=6722 available_mb=7288
+[2026-09-20 17:58:13+0000] LOAD: 17:58:13 up 13 min,  0 user,  load average: 0.09, 0.05, 0.00
+[2026-09-20 17:58:14+0000] PROCESS:agent-leak-app-arm64 STATUS:NOT_FOUND
+[2026-09-20 17:58:14+0000] MONITOR:PROCESS_EXITED PID:205
+[2026-09-20 17:58:14+0000] monitor.sh finished

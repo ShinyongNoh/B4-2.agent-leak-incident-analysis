@@ -1,0 +1,93 @@
+# monitor.sh started=2026-09-20 18:03:48+0000 host=5798da3b691f kernel=Linux 7.0.12-linuxkit aarch64 GNU/Linux
+# process_name=agent-leak-app-arm64 pid=auto interval=1s duration=100s
+[2026-09-20 18:03:48+0000] PROCESS:agent-leak-app-arm64 STATUS:NOT_FOUND
+[2026-09-20 18:03:49+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:8.90% MEM:0.20% RSS_KB:18292 ELAPSED:00:01 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:49+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=681 free_mb=6680 available_mb=7252
+[2026-09-20 18:03:49+0000] LOAD: 18:03:49 up 18 min,  0 user,  load average: 0.09, 0.04, 0.01
+[2026-09-20 18:03:50+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:4.40% MEM:0.20% RSS_KB:18292 ELAPSED:00:02 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:50+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=682 free_mb=6679 available_mb=7251
+[2026-09-20 18:03:50+0000] LOAD: 18:03:50 up 18 min,  0 user,  load average: 0.09, 0.04, 0.01
+[2026-09-20 18:03:51+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:2.80% MEM:0.20% RSS_KB:18356 ELAPSED:00:03 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:51+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=682 free_mb=6679 available_mb=7251
+[2026-09-20 18:03:51+0000] LOAD: 18:03:51 up 18 min,  0 user,  load average: 0.09, 0.04, 0.01
+[2026-09-20 18:03:52+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:2.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:04 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:52+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=682 free_mb=6679 available_mb=7251
+[2026-09-20 18:03:52+0000] LOAD: 18:03:52 up 18 min,  0 user,  load average: 0.09, 0.04, 0.01
+[2026-09-20 18:03:53+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:1.60% MEM:0.20% RSS_KB:18356 ELAPSED:00:05 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:53+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=683 free_mb=6678 available_mb=7250
+[2026-09-20 18:03:53+0000] LOAD: 18:03:53 up 18 min,  0 user,  load average: 0.08, 0.04, 0.00
+[2026-09-20 18:03:54+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:1.70% MEM:0.20% RSS_KB:18356 ELAPSED:00:06 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:54+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=683 free_mb=6678 available_mb=7250
+[2026-09-20 18:03:54+0000] LOAD: 18:03:54 up 18 min,  0 user,  load average: 0.08, 0.04, 0.00
+[2026-09-20 18:03:55+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:1.50% MEM:0.20% RSS_KB:18356 ELAPSED:00:07 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:55+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=684 free_mb=6677 available_mb=7249
+[2026-09-20 18:03:55+0000] LOAD: 18:03:55 up 18 min,  0 user,  load average: 0.08, 0.04, 0.00
+[2026-09-20 18:03:56+0000] PROCESS:agent-leak-app-arm64 PID:205 PIDS:2 CPU:1.30% MEM:0.20% RSS_KB:18356 ELAPSED:00:08 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:56+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=685 free_mb=6677 available_mb=7248
+[2026-09-20 18:03:56+0000] LOAD: 18:03:56 up 18 min,  0 user,  load average: 0.08, 0.04, 0.00
+[2026-09-20 18:03:57+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.30% MEM:0.20% RSS_KB:18356 ELAPSED:00:09 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:57+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=685 free_mb=6676 available_mb=7248
+[2026-09-20 18:03:57+0000] LOAD: 18:03:57 up 18 min,  0 user,  load average: 0.08, 0.04, 0.00
+[2026-09-20 18:03:58+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:10 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:58+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=685 free_mb=6676 available_mb=7248
+[2026-09-20 18:03:58+0000] LOAD: 18:03:58 up 18 min,  0 user,  load average: 0.07, 0.04, 0.00
+[2026-09-20 18:03:59+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:11 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:03:59+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=686 free_mb=6675 available_mb=7247
+[2026-09-20 18:03:59+0000] LOAD: 18:03:59 up 18 min,  0 user,  load average: 0.07, 0.04, 0.00
+[2026-09-20 18:04:00+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.00% MEM:0.20% RSS_KB:18356 ELAPSED:00:12 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:00+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=687 free_mb=6675 available_mb=7247
+[2026-09-20 18:04:00+0000] LOAD: 18:04:00 up 18 min,  0 user,  load average: 0.07, 0.04, 0.00
+[2026-09-20 18:04:01+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.00% MEM:0.20% RSS_KB:18356 ELAPSED:00:13 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:01+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=688 free_mb=6674 available_mb=7246
+[2026-09-20 18:04:01+0000] LOAD: 18:04:01 up 18 min,  0 user,  load average: 0.07, 0.04, 0.00
+[2026-09-20 18:04:02+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:0.90% MEM:0.20% RSS_KB:18356 ELAPSED:00:14 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:02+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=688 free_mb=6673 available_mb=7245
+[2026-09-20 18:04:02+0000] LOAD: 18:04:02 up 18 min,  0 user,  load average: 0.07, 0.04, 0.00
+[2026-09-20 18:04:03+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.00% MEM:0.20% RSS_KB:18356 ELAPSED:00:15 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:03+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=687 free_mb=6674 available_mb=7246
+[2026-09-20 18:04:03+0000] LOAD: 18:04:03 up 18 min,  0 user,  load average: 0.07, 0.03, 0.00
+[2026-09-20 18:04:04+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.00% MEM:0.20% RSS_KB:18356 ELAPSED:00:16 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:04+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=688 free_mb=6673 available_mb=7245
+[2026-09-20 18:04:04+0000] LOAD: 18:04:04 up 18 min,  0 user,  load average: 0.07, 0.03, 0.00
+[2026-09-20 18:04:05+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:0.90% MEM:0.20% RSS_KB:18356 ELAPSED:00:17 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:05+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=685 free_mb=6676 available_mb=7248
+[2026-09-20 18:04:05+0000] LOAD: 18:04:05 up 18 min,  0 user,  load average: 0.07, 0.03, 0.00
+[2026-09-20 18:04:06+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:18 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:06+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=685 free_mb=6676 available_mb=7248
+[2026-09-20 18:04:06+0000] LOAD: 18:04:06 up 18 min,  0 user,  load average: 0.07, 0.03, 0.00
+[2026-09-20 18:04:07+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:19 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:07+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=685 free_mb=6676 available_mb=7248
+[2026-09-20 18:04:07+0000] LOAD: 18:04:07 up 18 min,  0 user,  load average: 0.07, 0.03, 0.00
+[2026-09-20 18:04:08+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:0.90% MEM:0.20% RSS_KB:18356 ELAPSED:00:20 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:08+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=686 free_mb=6675 available_mb=7247
+[2026-09-20 18:04:08+0000] LOAD: 18:04:08 up 18 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:09+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:21 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:09+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=686 free_mb=6675 available_mb=7247
+[2026-09-20 18:04:09+0000] LOAD: 18:04:09 up 18 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:10+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.00% MEM:0.20% RSS_KB:18356 ELAPSED:00:22 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:10+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=686 free_mb=6675 available_mb=7247
+[2026-09-20 18:04:10+0000] LOAD: 18:04:10 up 18 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:11+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.00% MEM:0.20% RSS_KB:18356 ELAPSED:00:23 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:11+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=687 free_mb=6674 available_mb=7246
+[2026-09-20 18:04:11+0000] LOAD: 18:04:11 up 18 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:12+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:24 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:12+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=687 free_mb=6674 available_mb=7246
+[2026-09-20 18:04:12+0000] LOAD: 18:04:12 up 19 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:13+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:25 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:13+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=687 free_mb=6674 available_mb=7246
+[2026-09-20 18:04:13+0000] LOAD: 18:04:13 up 19 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:14+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:26 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:14+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=688 free_mb=6673 available_mb=7245
+[2026-09-20 18:04:14+0000] LOAD: 18:04:14 up 19 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:15+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.20% MEM:0.20% RSS_KB:18356 ELAPSED:00:27 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:15+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=688 free_mb=6673 available_mb=7245
+[2026-09-20 18:04:15+0000] LOAD: 18:04:15 up 19 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:16+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.20% MEM:0.20% RSS_KB:18356 ELAPSED:00:28 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:16+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=688 free_mb=6673 available_mb=7245
+[2026-09-20 18:04:16+0000] LOAD: 18:04:16 up 19 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:17+0000] PROCESS:agent-leak-app-arm64 PID:217 PIDS:2 CPU:1.10% MEM:0.20% RSS_KB:18356 ELAPSED:00:29 STAT:Ss THREADS:2 COMM:agent-leak-app-
+[2026-09-20 18:04:17+0000] SYSTEM_MEMORY: total_mb=7934 used_mb=688 free_mb=6673 available_mb=7245
+[2026-09-20 18:04:17+0000] LOAD: 18:04:17 up 19 min,  0 user,  load average: 0.06, 0.03, 0.00
+[2026-09-20 18:04:18+0000] PROCESS:agent-leak-app-arm64 STATUS:NOT_FOUND
+[2026-09-20 18:04:18+0000] MONITOR:PROCESS_EXITED PID:217
+[2026-09-20 18:04:18+0000] monitor.sh finished

@@ -1,0 +1,41 @@
+>>> Starting Agent Boot Sequence...
+[1/6] Checking User Account               [OK]
+   ... Running as service user 'agent' (uid=1000)
+[2/6] Verifying Environment Variables     [OK]
+   ... All required Envs correct
+[3/6] Checking Required Files             [OK]
+   ... Verified 'secret.key' with correct key string.
+[4/6] Checking Port Availability          [OK]
+   ... Port 15034 is available.
+[5/6] Verifying Log Permission            [OK]
+   ... Log directory is writable: /tmp/agent_home/logs
+[6/6] Verifying Mission Environment       [OK]
+   ... MEMORY_LIMIT=512MB, CPU_MAX_OCCUPY=100%, MULTI_THREAD_ENABLE=False
+------------------------------------------------------------
+All Boot Checks Passed!
+Agent READY
+2026-09-20 17:50:33,871 [INFO] [SafetyGuard] Process priority lowered (nice=10).
+2026-09-20 17:50:33,871 [INFO] Agent listening at port 15034
+
+==================================================
+ [ Agent Initiate ] Resource Check 
+==================================================
+ [ MEMORY ] Limit: 512MB 		[ OK ]
+ [ CPU    ] Limit: 100%  		[ WARNING: Recommend Under 50% ]
+ [ THREAD ] Concurrency: False 		[ OK ]
+--------------------------------------------------
+ >>> SYSTEM STATUS: STABLE. STARTING WORKLOAD MONITORING...
+==================================================
+
+2026-09-20 17:50:35,883 [INFO] [CpuWorker] Started. Maximum CPU Limit: 100%
+2026-09-20 17:50:35,884 [INFO] [CpuWorker] Current Load: 5.00%
+2026-09-20 17:50:39,011 [INFO] [CpuWorker] Current Load: 11.98%
+2026-09-20 17:50:42,146 [INFO] [CpuWorker] Current Load: 13.08%
+2026-09-20 17:50:45,284 [INFO] [CpuWorker] Current Load: 17.08%
+2026-09-20 17:50:48,418 [INFO] [CpuWorker] Current Load: 20.53%
+2026-09-20 17:50:51,555 [INFO] [CpuWorker] Current Load: 26.27%
+2026-09-20 17:50:54,682 [INFO] [CpuWorker] Current Load: 33.66%
+2026-09-20 17:50:57,811 [INFO] [CpuWorker] Current Load: 41.31%
+2026-09-20 17:51:00,941 [INFO] [CpuWorker] Current Load: 50.84%
+2026-09-20 17:51:01,048 [CRITICAL] [CpuWorker] CPU Threshold Violated! (50.839999999999996%).
+Terminated
