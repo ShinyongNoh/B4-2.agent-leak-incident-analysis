@@ -1,0 +1,18 @@
+DEADLOCK AFTER — TOP THREAD VIEW
+=================================
+
+수집 명령: top -H -b -n 1 -p 208
+설정: MULTI_THREAD_ENABLE=false
+
+시스템 관측:
+- 프로세스 상태: sleeping(S)
+- 프로세스 CPU 사용률: 0.0%
+- 시스템 CPU idle: 100.0%
+- 표시된 스레드: 1개
+
+프로세스 요약:
+PID  USER   PR  NI  VIRT  RES   SHR   S  CPU    MEM    COMMAND
+208  agent  20   0   2740  1576  1364  S  0.0%   0.0%   agent-leak-app
+
+판정:
+단일 실행 흐름으로 전환한 뒤 Deadlock을 유발하는 두 스레드의 상호 락 대기 로그가 발생하지 않고, 애플리케이션 작업 완료 로그가 확인됩니다.

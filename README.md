@@ -310,15 +310,27 @@ PID와 프로세스 목록을 저장합니다.
 ```bash
 APP_PIDS=$(pgrep -f '^/work/agent-leak-app-arm64$' | paste -sd, -)
 LEADER_PID=${APP_PIDS%%,*}
-echo "APP_PIDS=$APP_PIDS" > /work/evidence/demo/deadlock/processes.txt
-ps -ef | grep -E 'agent-leak-app|PID' | grep -v grep >> /work/evidence/demo/deadlock/processes.txt
-```
-
-스레드와 `top` 상태를 저장합니다.
-
-```bash
-ps -L -p "$APP_PIDS" -o pid,ppid,tid,stat,pcpu,pmem,rss,wchan:32,comm,args > /work/evidence/demo/deadlock/threads-before.txt
-top -H -b -n 1 -p "$LEADER_PID" > /work/evidence/demo/deadlock/top-before.txt
+DEADLOCK_BEFORE_PS=/tmp/agent-leak-deadlock-ps-before.txt
+DEADLOCK_BEFORE_THREADS=/tmp/agent-leak-deadlock-threads-before.txt
+DEADLOCK_BEFORE_TOP=/tmp/agent-leak-deadlock-top-before.txt
+{
+  printf '%s\n' 'DEADLOCK BEFORE — PROCESS LIST'
+  printf '%s\n' '수집 명령: ps -ef | grep -E agent-leak-app|PID'
+  printf '관측된 애플리케이션 PID: %s\n\n' "$APP_PIDS"
+  ps -ef | grep -E 'agent-leak-app|PID' | grep -v grep
+} > "$DEADLOCK_BEFORE_PS"
+{
+  printf '%s\n' 'DEADLOCK BEFORE — THREAD SNAPSHOT'
+  printf '%s\n' '수집 명령: ps -L'
+  printf '설정: MULTI_THREAD_ENABLE=true\n\n'
+  ps -L -p "$APP_PIDS" -o pid,ppid,tid,stat,pcpu,pmem,rss,wchan:32,comm,args
+} > "$DEADLOCK_BEFORE_THREADS"
+{
+  printf '%s\n' 'DEADLOCK BEFORE — TOP THREAD VIEW'
+  printf '%s\n' '수집 명령: top -H'
+  printf '설정: MULTI_THREAD_ENABLE=true\n\n'
+  top -H -b -n 1 -p "$LEADER_PID"
+} > "$DEADLOCK_BEFORE_TOP"
 ```
 
 관제 로그를 수집합니다.
@@ -351,6 +363,9 @@ pkill -KILL -f '^/work/agent-leak-app-arm64$' 2>/dev/null || true
 } > /work/evidence/demo/deadlock/before.log
 
 rm -f "$DEADLOCK_APP_TMP" "$DEADLOCK_MONITOR_TMP"
+mv "$DEADLOCK_BEFORE_PS" /work/evidence/demo/deadlock/ps-before.txt
+mv "$DEADLOCK_BEFORE_THREADS" /work/evidence/demo/deadlock/threads-before.txt
+mv "$DEADLOCK_BEFORE_TOP" /work/evidence/demo/deadlock/top-before.txt
 ```
 
 ### 11. Deadlock 회피 확인
@@ -359,7 +374,48 @@ rm -f "$DEADLOCK_APP_TMP" "$DEADLOCK_MONITOR_TMP"
 export MEMORY_LIMIT=512
 export CPU_MAX_OCCUPY=30
 export MULTI_THREAD_ENABLE=false
-run_and_monitor /work/evidence/demo/deadlock/after.log 15
+DEADLOCK_APP_AFTER_TMP=/tmp/agent-leak-deadlock-app-after.log
+DEADLOCK_MONITOR_AFTER_TMP=/tmp/agent-leak-deadlock-monitor-after.log
+su -p -s /bin/bash agent -c 'exec /work/agent-leak-app-arm64' > "$DEADLOCK_APP_AFTER_TMP" 2>&1 &
+sleep 7
+
+APP_PIDS=$(pgrep -f '^/work/agent-leak-app-arm64$' | paste -sd, -)
+LEADER_PID=${APP_PIDS%%,*}
+DEADLOCK_AFTER_PS=/tmp/agent-leak-deadlock-ps-after.txt
+DEADLOCK_AFTER_THREADS=/tmp/agent-leak-deadlock-threads-after.txt
+DEADLOCK_AFTER_TOP=/tmp/agent-leak-deadlock-top-after.txt
+{
+  printf '%s\n' 'DEADLOCK AFTER — PROCESS LIST'
+  printf '%s\n' '수집 명령: ps -ef | grep -E agent-leak-app|PID'
+  printf '관측된 애플리케이션 PID: %s\n\n' "$APP_PIDS"
+  ps -ef | grep -E 'agent-leak-app|PID' | grep -v grep
+} > "$DEADLOCK_AFTER_PS"
+{
+  printf '%s\n' 'DEADLOCK AFTER — THREAD SNAPSHOT'
+  printf '%s\n' '수집 명령: ps -L'
+  printf '설정: MULTI_THREAD_ENABLE=false\n\n'
+  ps -L -p "$APP_PIDS" -o pid,ppid,tid,stat,pcpu,pmem,rss,wchan:32,comm,args
+} > "$DEADLOCK_AFTER_THREADS"
+{
+  printf '%s\n' 'DEADLOCK AFTER — TOP THREAD VIEW'
+  printf '%s\n' '수집 명령: top -H'
+  printf '설정: MULTI_THREAD_ENABLE=false\n\n'
+  top -H -b -n 1 -p "$LEADER_PID"
+} > "$DEADLOCK_AFTER_TOP"
+
+./monitor.sh -n agent-leak-app-arm64 -i 1 -d 15 -o "$DEADLOCK_MONITOR_AFTER_TMP"
+pkill -TERM -f '^/work/agent-leak-app-arm64$' 2>/dev/null || true
+sleep 1
+{
+  printf '%s\n' '=== APPLICATION LOG ==='
+  awk '{print}' "$DEADLOCK_APP_AFTER_TMP"
+  printf '\n%s\n' '=== MONITOR LOG ==='
+  awk '{print}' "$DEADLOCK_MONITOR_AFTER_TMP"
+} > /work/evidence/demo/deadlock/after.log
+mv "$DEADLOCK_AFTER_PS" /work/evidence/demo/deadlock/ps-after.txt
+mv "$DEADLOCK_AFTER_THREADS" /work/evidence/demo/deadlock/threads-after.txt
+mv "$DEADLOCK_AFTER_TOP" /work/evidence/demo/deadlock/top-after.txt
+rm -f "$DEADLOCK_APP_AFTER_TMP" "$DEADLOCK_MONITOR_AFTER_TMP"
 ```
 
 After 로그에서 다음 내용을 확인합니다.
@@ -386,9 +442,12 @@ evidence/demo/cpu/before.log
 evidence/demo/cpu/after.log
 evidence/demo/deadlock/before.log
 evidence/demo/deadlock/after.log
-evidence/demo/deadlock/processes.txt
+evidence/demo/deadlock/ps-before.txt
+evidence/demo/deadlock/ps-after.txt
 evidence/demo/deadlock/threads-before.txt
+evidence/demo/deadlock/threads-after.txt
 evidence/demo/deadlock/top-before.txt
+evidence/demo/deadlock/top-after.txt
 ```
 
 프로젝트 리포트와 원문 증거를 확인합니다.

@@ -1,3 +1,0 @@
-    PID    PPID     TID STAT %CPU %MEM   RSS WCHAN                            COMMAND         COMMAND
-    208     201     208 Ss    0.8  0.0  1576 -                                agent-leak-app- /work/agent-leak-app-arm64
-    218     208     218 SN    0.4  0.2 16700 -                                agent-leak-app- /work/agent-leak-app-arm64

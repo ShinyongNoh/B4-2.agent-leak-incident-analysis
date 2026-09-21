@@ -6,6 +6,6 @@
 |---|---|---|
 | OOM | `oom/before.log`, `oom/after.log` | combined logs 내부의 `MONITOR LOG` 구역 |
 | CPU | `cpu/before.log`, `cpu/after.log` | combined logs 내부의 `MONITOR LOG` 구역 |
-| Deadlock | `deadlock/before.log`, `deadlock/after.log` | `deadlock/ps-ef-final.txt`, `deadlock/threads-final.txt`, `deadlock/threads-final-after.txt`, `deadlock/top-final.txt`, `deadlock/top-final-after.txt` |
+| Deadlock | `deadlock/before.log`, `deadlock/after.log` | `deadlock/ps-before.txt`, `deadlock/ps-after.txt`, `deadlock/threads-before.txt`, `deadlock/threads-after.txt`, `deadlock/top-before.txt`, `deadlock/top-after.txt` |
 
 CPU 케이스의 `CpuWorker Current Load`는 애플리케이션 내부 Watchdog 지표이고, `monitor.sh`의 `ps` CPU는 Linux host 관측값입니다. 두 값이 달랐으므로 리포트에서 별도 계측으로 명시했습니다.

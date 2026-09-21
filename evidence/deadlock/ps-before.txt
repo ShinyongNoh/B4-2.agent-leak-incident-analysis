@@ -1,0 +1,20 @@
+DEADLOCK BEFORE — PROCESS LIST
+================================
+
+수집 명령: ps -ef | grep -E 'agent-leak-app|PID'
+수집 시점: MULTI_THREAD_ENABLE=true 실행 후 약 7초
+
+관측된 애플리케이션 PID: 208, 218
+
+프로세스 관계:
+- PID 208은 agent 계정으로 실행된 agent-leak-app 프로세스입니다.
+- PID 218은 PID 208의 자식 프로세스로 실행된 agent-leak-app 프로세스입니다.
+- 두 프로세스 모두 종료되지 않고 존재하므로 Deadlock 상태에서도 PID가 유지됨을 확인할 수 있습니다.
+
+관련 프로세스 목록:
+UID    PID   PPID  STAT  COMMAND
+agent  208   201   -     /work/agent-leak-app-arm64
+agent  218   208   -     /work/agent-leak-app-arm64
+
+판정:
+프로세스가 살아 있으므로 단순한 Crash나 즉시 종료 상태가 아닙니다. 스레드와 로그 상태를 추가로 확인해야 합니다.

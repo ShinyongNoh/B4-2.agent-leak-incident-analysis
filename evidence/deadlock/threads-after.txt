@@ -1,0 +1,17 @@
+DEADLOCK AFTER — THREAD SNAPSHOT
+=================================
+
+수집 명령: ps -L -p 208,218 -o pid,ppid,tid,stat,pcpu,pmem,rss,wchan,comm,args
+설정: MULTI_THREAD_ENABLE=false
+
+스레드 관측 결과:
+
+PID  PPID  TID  STAT  CPU    MEM    RSS(KB)  WCHAN  COMMAND
+208  201   208  Ss    0.3%   0.0%   1,576    -      agent-leak-app
+218  208   218  SNl   0.2%   0.2%  16,824    -      agent-leak-app
+218  208   314  SNl   0.0%   0.2%  16,824    -      agent-leak-app
+218  208   316  SNl   0.0%   0.2%  16,824    -      agent-leak-app
+
+해석:
+- Deadlock 재현 설정과 달리 작업 완료 로그가 이어지며, 스레드 상태가 정상적으로 진행됩니다.
+- RSS는 약 16,824KB로 관측되며, 비정상적인 메모리 증가 패턴은 확인되지 않습니다.

@@ -1,0 +1,20 @@
+DEADLOCK AFTER — PROCESS LIST
+===============================
+
+수집 명령: ps -ef | grep -E 'agent-leak-app|PID'
+수집 시점: MULTI_THREAD_ENABLE=false 실행 후 약 7초
+
+관측된 애플리케이션 PID: 208, 218
+
+프로세스 관계:
+- PID 208은 agent 계정으로 실행된 agent-leak-app 프로세스입니다.
+- PID 218은 PID 208의 자식 프로세스로 실행된 agent-leak-app 프로세스입니다.
+- 회피 설정에서도 프로세스가 정상적으로 유지되며 작업을 수행할 수 있는 상태입니다.
+
+관련 프로세스 목록:
+UID    PID   PPID  STAT  COMMAND
+agent  208   201   -     /work/agent-leak-app-arm64
+agent  218   208   -     /work/agent-leak-app-arm64
+
+판정:
+MULTI_THREAD_ENABLE=false로 실행해도 PID는 존재하지만, Deadlock 로그가 발생하지 않고 정상 작업 진행 여부를 로그와 함께 확인합니다.

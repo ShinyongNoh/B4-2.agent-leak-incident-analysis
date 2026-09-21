@@ -13,7 +13,7 @@ MEMORY_LIMIT=512 CPU_MAX_OCCUPY=30 MULTI_THREAD_ENABLE=true \
   -o evidence/deadlock/before.log
 ```
 
-PID와 스레드 증거는 [ps-ef-final.txt](../evidence/deadlock/ps-ef-final.txt), [threads-final.txt](../evidence/deadlock/threads-final.txt), [threads-final-after.txt](../evidence/deadlock/threads-final-after.txt), [top-final.txt](../evidence/deadlock/top-final.txt), [top-final-after.txt](../evidence/deadlock/top-final-after.txt)에 있습니다.
+PID, 프로세스, 스레드, `top -H` 증거는 파트별 `before/after` 파일로 분리되어 있습니다: [ps-before.txt](../evidence/deadlock/ps-before.txt), [ps-after.txt](../evidence/deadlock/ps-after.txt), [threads-before.txt](../evidence/deadlock/threads-before.txt), [threads-after.txt](../evidence/deadlock/threads-after.txt), [top-before.txt](../evidence/deadlock/top-before.txt), [top-after.txt](../evidence/deadlock/top-after.txt). 각 파일에는 수집 명령, 실행 설정, 관측 결과, 판정을 읽기 쉬운 문장으로 기록했습니다.
 
 Workaround 비교:
 
